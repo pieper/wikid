@@ -39,26 +39,23 @@ $(document).ready(function() {
 });
 
 function saveSettings() {
-    localStorage.age = $('#age').val();
-    localStorage.budget = $('#budget').val();
-    localStorage.weight = $('#weight').val();
+    localStorage.age = $('#NumberOfResults').val();
     jQT.goBack();
     return false;
 }
 
 function loadSettings() {
-    $('#age').val(localStorage.age);
-    $('#budget').val(localStorage.budget);
-    $('#weight').val(localStorage.weight);
+    $('#NumberOfResults').val(localStorage.age);
 }
 
 function search() {
     var searchString = $('#searchString').val();
+    var numberOfResults = $('#NumberOfResults').val();
     db.transaction(
         function(transaction) {
             transaction.executeSql(
-                'SELECT * FROM dictionary WHERE english = ? ORDER BY english;',
-                [searchString],
+                'SELECT * FROM dictionary WHERE english = ? ORDER BY english LIMIT ?;',
+                [searchString, numberOfResults],
                 function (transaction, result) {
                     for (var i=0; i < result.rows.length; i++) {
                         var row = result.rows.item(i);
@@ -71,6 +68,14 @@ function search() {
                         newEntryRow.find('.english').text(row.english);
                         newEntryRow.find('.spanish').text(row.spanish);
                         ;
+                    }
+                    if (result.rows.length > numberOfResults-1) {
+                        var newEntryRow = $('#resultTemplate').clone();
+                        newEntryRow.removeAttr('id');
+                        newEntryRow.removeAttr('style');
+                        newEntryRow.appendTo('#searchResults ul');
+                        newEntryRow.find('.english').text("More...");
+                        newEntryRow.find('.spanish').text("");
                     }
                 },
                 errorHandler
