@@ -10,11 +10,14 @@ $(document).ready(function() {
     $('#settings form').submit(saveSettings);
     $('#settings').bind('pageAnimationStart', loadSettings);
 
-    var shortName = 'Wikid';
     var version = '0.1';
     var displayName = 'Wikid';
     var maxSize = 65536;
     db = openDatabase('wikid', version, displayName, maxSize);
+
+    if (localStorage.numberOfResults == undefined) {
+        localStorage.numberOfResults = 10
+    }
 
     db.transaction(
         function(transaction) {
@@ -39,18 +42,18 @@ $(document).ready(function() {
 });
 
 function saveSettings() {
-    localStorage.age = $('#NumberOfResults').val();
+    localStorage.numberOfResults = $('#NumberOfResults').val();
     jQT.goBack();
     return false;
 }
 
 function loadSettings() {
-    $('#NumberOfResults').val(localStorage.age);
+    $('#NumberOfResults').val(localStorage.numberOfResults);
 }
 
 function search() {
     var searchString = $('#searchString').val();
-    var numberOfResults = $('#NumberOfResults').val();
+    var numberOfResults = localStorage.numberOfResults;
     db.transaction(
         function(transaction) {
             transaction.executeSql(
