@@ -4,7 +4,6 @@ var jQT = $.jQTouch({
     startupScreen: 'wikid-startup.png',
     statusBar: 'black'
 });
-var query;
 
 $(document).ready(function() {
     $('#home form').submit(search);
@@ -40,7 +39,11 @@ $(document).ready(function() {
             );
         }
     );
+
+    loadDictionaryItem ('thank you', 'gracias');
+    loadDictionaryItem ('today', 'hoy');
 });
+
 
 function saveSettings() {
     localStorage.numberOfResults = $('#NumberOfResults').val();
@@ -55,7 +58,7 @@ function loadSettings() {
 function search() {
     var searchString = $('#searchString').val();
     var numberOfResults = localStorage.numberOfResults;
-    query = 'SELECT * FROM dictionary WHERE english GLOB \'' + searchString + '*\' ' + 'ORDER BY english LIMIT ' + numberOfResults + ';';
+    var query = 'SELECT * FROM dictionary WHERE english GLOB \'' + searchString + '*\' ' + ' OR spanish GLOB \'' + searchString + '*\' ORDER BY english LIMIT ' + numberOfResults + ';';
     db.transaction(
         function(transaction) {
             transaction.executeSql(
@@ -63,6 +66,7 @@ function search() {
                 [],
                 function (transaction, result) {
                     var searchResults = $('#searchResults ul');
+                    var children = searchResults.children();
                     if (result.rows.length <= 0 ) {
                         var newEntryRow = $('#resultTemplate').clone();
                         newEntryRow.removeAttr('id');
@@ -79,7 +83,7 @@ function search() {
                             newEntryRow.data('entryId', row.id);
                             newEntryRow.data('type', 'dynamic');
                             newEntryRow.appendTo(searchResults);
-                            newEntryRow.find('.english').text(row.english);
+                            newEntryRow.find('.english').text(row.english + "   ...   ");
                             newEntryRow.find('.spanish').text(row.spanish);
                             ;
                         }
@@ -105,3 +109,16 @@ function errorHandler(transaction, error) {
     return true;
 }
 
+
+function loadDictionaryItem(eng, esp) {
+    db.transaction(
+        function(transaction) {
+            transaction.executeSql(
+                'INSERT INTO dictionary (english, spanish) VALUES (?, ?);',
+                [eng, esp],
+                function(){},
+                errorHandler
+            );
+        }
+    );
+}
