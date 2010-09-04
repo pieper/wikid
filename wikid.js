@@ -4,6 +4,7 @@ var jQT = $.jQTouch({
     startupScreen: 'wikid-startup.png',
     statusBar: 'black'
 });
+var query;
 
 $(document).ready(function() {
     $('#home form').submit(search);
@@ -33,7 +34,7 @@ $(document).ready(function() {
         function(transaction) {
             transaction.executeSql(
                 'INSERT INTO dictionary (english, spanish) VALUES (?, ?);',
-                ['h', 'h'],
+                ['hello', 'hola'],
                 function(){},
                 errorHandler
             );
@@ -54,31 +55,42 @@ function loadSettings() {
 function search() {
     var searchString = $('#searchString').val();
     var numberOfResults = localStorage.numberOfResults;
+    query = 'SELECT * FROM dictionary WHERE english GLOB \'' + searchString + '*\' ' + 'ORDER BY english LIMIT ' + numberOfResults + ';';
     db.transaction(
         function(transaction) {
             transaction.executeSql(
-                'SELECT * FROM dictionary WHERE english = ? ORDER BY english LIMIT ?;',
-                [searchString, numberOfResults],
+                query,
+                [],
                 function (transaction, result) {
-                    for (var i=0; i < result.rows.length; i++) {
-                        var row = result.rows.item(i);
+                    var searchResults = $('#searchResults ul');
+                    if (result.rows.length <= 0 ) {
                         var newEntryRow = $('#resultTemplate').clone();
                         newEntryRow.removeAttr('id');
                         newEntryRow.removeAttr('style');
-                        newEntryRow.data('entryId', row.id);
-                        newEntryRow.data('type', 'dynamic');
-                        newEntryRow.appendTo('#searchResults ul');
-                        newEntryRow.find('.english').text(row.english);
-                        newEntryRow.find('.spanish').text(row.spanish);
-                        ;
-                    }
-                    if (result.rows.length > numberOfResults-1) {
-                        var newEntryRow = $('#resultTemplate').clone();
-                        newEntryRow.removeAttr('id');
-                        newEntryRow.removeAttr('style');
-                        newEntryRow.appendTo('#searchResults ul');
-                        newEntryRow.find('.english').text("More...");
+                        newEntryRow.appendTo(searchResults);
+                        newEntryRow.find('.english').text("No Matches");
                         newEntryRow.find('.spanish').text("");
+                    } else {
+                        for (var i=0; i < result.rows.length; i++) {
+                            var row = result.rows.item(i);
+                            var newEntryRow = $('#resultTemplate').clone();
+                            newEntryRow.removeAttr('id');
+                            newEntryRow.removeAttr('style');
+                            newEntryRow.data('entryId', row.id);
+                            newEntryRow.data('type', 'dynamic');
+                            newEntryRow.appendTo(searchResults);
+                            newEntryRow.find('.english').text(row.english);
+                            newEntryRow.find('.spanish').text(row.spanish);
+                            ;
+                        }
+                        if (result.rows.length > numberOfResults-1) {
+                            var newEntryRow = $('#resultTemplate').clone();
+                            newEntryRow.removeAttr('id');
+                            newEntryRow.removeAttr('style');
+                            newEntryRow.appendTo(searchResults);
+                            newEntryRow.find('.english').text("More...");
+                            newEntryRow.find('.spanish').text("");
+                        }
                     }
                 },
                 errorHandler
