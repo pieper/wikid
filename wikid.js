@@ -19,29 +19,22 @@ $(document).ready(function() {
         localStorage.numberOfResults = 10
     }
 
+    // load the database if it hasn't be loaded yet
+    var query = 'SELECT * FROM dictionary WHERE english = \'Man\';';
     db.transaction(
         function(transaction) {
             transaction.executeSql(
-                'CREATE TABLE IF NOT EXISTS dictionary ' +
-                ' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
-                ' english DATE NOT NULL, ' +
-                ' spanish INTEGER NOT NULL );'
-            );
-        }
-    );
-    db.transaction(
-        function(transaction) {
-            transaction.executeSql(
-                'INSERT INTO dictionary (english, spanish) VALUES (?, ?);',
-                ['hello', 'hola'],
-                function(){},
+                query,
+                [],
+                function (transaction, result) {
+                    if (result.rows.length <= 0 ) {
+                        loadDatabase();
+                    }
+                },
                 errorHandler
             );
         }
     );
-
-    loadDictionaryItem ('thank you', 'gracias');
-    loadDictionaryItem ('today', 'hoy');
 });
 
 
@@ -121,4 +114,26 @@ function loadDictionaryItem(eng, esp) {
             );
         }
     );
+}
+
+function loadDatabase () {
+    db.transaction(
+        function(transaction) {
+            transaction.executeSql(
+                'DROP TABLE dictionary'
+            );
+        }
+    );
+    db.transaction(
+        function(transaction) {
+            transaction.executeSql(
+                'CREATE TABLE IF NOT EXISTS dictionary ' +
+                ' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
+                ' english DATE NOT NULL, ' +
+                ' spanish INTEGER NOT NULL );'
+            );
+        }
+    );
+
+    loadEn2Es();
 }
