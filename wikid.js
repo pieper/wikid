@@ -64,7 +64,7 @@ function search() {
                         newEntryRow.removeAttr('id');
                         newEntryRow.removeAttr('style');
                         newEntryRow.appendTo(searchResults);
-                        newEntryRow.find('.english').text("No Matches");
+                        newEntryRow.find('.english').text("No Matches...");
                         newEntryRow.find('.spanish').text("");
                     } else {
                         for (var i=0; i < result.rows.length; i++) {
