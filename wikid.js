@@ -9,6 +9,7 @@ $(document).ready(function() {
     $('#home form').submit(search);
     $('#settings form').submit(saveSettings);
     $('#settings').bind('pageAnimationStart', loadSettings);
+    $('#reloadDatabase').submit(loadDatabase);
 
     var version = '0.1';
     var displayName = 'Wikid';
