@@ -136,8 +136,8 @@ function loadDatabase () {
             transaction.executeSql(
                 'CREATE TABLE IF NOT EXISTS dictionary ' +
                 ' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
-                ' english DATE NOT NULL, ' +
-                ' spanish INTEGER NOT NULL );'
+                ' english TEXT NOT NULL, ' +
+                ' spanish TEXT NOT NULL );'
             );
         }
     );
