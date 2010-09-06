@@ -51,7 +51,7 @@ function loadSettings() {
 function search() {
     var searchString = $('#searchString').val();
     var numberOfResults = localStorage.numberOfResults;
-    var query = 'SELECT * FROM dictionary WHERE english GLOB \'' + searchString + '*\' ' + ' OR spanish GLOB \'' + searchString + '*\' ORDER BY english LIMIT ' + numberOfResults + ';';
+    var query = 'SELECT * FROM dictionary WHERE english LIKE \'' + searchString + '%\' ' + ' OR spanish LIKE \'' + searchString + '%\' ORDER BY english LIMIT ' + numberOfResults + ';';
     db.transaction(
         function(transaction) {
             transaction.executeSql(
