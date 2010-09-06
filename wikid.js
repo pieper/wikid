@@ -52,6 +52,13 @@ function loadSettings() {
 function search() {
     var searchString = $('#searchString').val();
     var numberOfResults = localStorage.numberOfResults;
+    var newEntryRow = $('#resultTemplate').clone();
+    newEntryRow.removeAttr('id');
+    newEntryRow.removeAttr('style');
+    newEntryRow.appendTo(searchResults);
+    newEntryRow.find('.english').text("Searching...");
+    newEntryRow.find('.spanish').text("");
+
     var query = 'SELECT * FROM dictionary WHERE english LIKE \'' + searchString + '%\' ' + ' OR spanish LIKE \'' + searchString + '%\' ORDER BY english LIMIT ' + numberOfResults + ';';
     db.transaction(
         function(transaction) {
