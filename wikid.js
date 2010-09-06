@@ -59,7 +59,7 @@ function search() {
     newEntryRow.find('.english').text("Searching...");
     newEntryRow.find('.spanish').text("");
 
-    var query = 'SELECT * FROM dictionary WHERE english LIKE \'' + searchString + '%\' ' + ' OR spanish LIKE \'' + searchString + '%\' ORDER BY english LIMIT ' + numberOfResults + ';';
+    var query = 'SELECT * FROM dictionary WHERE english LIKE \'' + searchString + '%\' ' + ' OR spanish LIKE \'' + searchString + '%\' LIMIT ' + numberOfResults + ';';
     db.transaction(
         function(transaction) {
             transaction.executeSql(
@@ -127,7 +127,7 @@ function loadDatabase () {
     db.transaction(
         function(transaction) {
             transaction.executeSql(
-                'DROP TABLE dictionary'
+                'DROP TABLE IF EXISTS dictionary'
             );
         }
     );
