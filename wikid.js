@@ -58,8 +58,7 @@ function search() {
                 query,
                 [],
                 function (transaction, result) {
-                    var searchResults = $('#searchResults ul');
-                    var children = searchResults.children();
+                    $('li').remove(':contains("...")');
                     if (result.rows.length <= 0 ) {
                         var newEntryRow = $('#resultTemplate').clone();
                         newEntryRow.removeAttr('id');
