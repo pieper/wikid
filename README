@@ -6,3 +6,19 @@ Sample full-screen HTML5 webapp that can be installed on an iphone home page
 with icon and splashscreen.
 
 
+
+The actual implementation is a little quirky (once I got it on my phone I kind of stopped working on that).  But it does eventually work.
+
+What you do is:
+
+- go to http://apps.ibility.net/wikid
+- in iphone safari pick save bookmark to home page
+- go to the iphone home screen and select the W! icon
+- go to Settings and pick Reload Database.
+- wait 5-10 minutes while the database is populated
+
+There will be a few alert dialogs until you click the reload database, and the 5-10 minute is due to a bunch of sql statements that go on in the background (I don't know how to show any progress on them...)
+
+You can try typing something like 'boy' or 'nino' into the search bar.  When the database is populated you'll get the translation.  If it's not done it will just say 'Searching...'
+
+
